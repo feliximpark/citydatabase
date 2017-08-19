@@ -1,0 +1,29 @@
+{% include "header.html" %}
+<!-- only show form when user is logged in (means: when login_session has a existing username) -->
+{% if login_session["username"] %}
+    <h2>Creating a new City</h2>
+    <!-- creating form to give informations about new city and possible new attraction -->
+    <form action="#" method="POST" id="item">
+        <label for="newcityname">New City Name</label><br>
+        <input type ="text" maxlength="40" class="form-control" name="newcityname"><br><br>
+        <h2>Attraction in this city (optional)</h2>
+        <label for="attraction">Name of attraction</label><br>
+        <input type ="text" maxlength="80" class="form-control" name="attraction"><br><br>
+        <label for="description">Description of Attraction</label><br>
+        <textarea maxlenght="400" rows="3" name="description"></textarea>
+        <br>
+        <br>
+        <br>
+        <br>
+        <br>
+        <button type="submit" id="submit" type="submit">Submit</button>
+        <button type="button" onclick="window.location.href='/'">Back to main page</button>
+    </form>
+<!-- ask not logged-in user to log in before adding a new city  -->
+{%else%}
+    <h1>Please log in, before adding a new city</h1>
+{%endif%}
+<!-- closing open tags from header.html -->
+</div>
+</body>
+</html>

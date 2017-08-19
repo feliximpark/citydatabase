@@ -1,0 +1,27 @@
+{% extends "main.html" %}
+<!-- exchange the attraction-block of main.html -->
+{% block attraction %}
+<div class="col-md-6">
+    <h1>Attractions in {{city.name}}</h1>
+    <hr>
+    {% for i in items %}
+        <a href="{{url_for('show_item', cityname = i.categories.name, item=i.name)}}"><h3>{{i.name}}</h3></a>
+    {%endfor%}
+    <hr>
+    <!-- only users should be able to add new attraction or delete cities -->
+    {% if login_session["username"] %}
+        <a href="{{url_for('new_item', city = city.name)}}"><p>Add new Attraction to {{city.name}}</p></a>
+        <a href="{{url_for('delete_city', city = city.name)}}"><p>Delete {{city.name}} and all attractions</p></a>
+        <a href="{{url_for('landing_page', login_session=login_session)}}"><p>Back to main page</p></a>
+        <br>
+        <br>
+        <br>
+        <!-- logged-in users getting informations, who created the city-entry -->
+        {% if city.user_id %}
+            <sup>This city-entry was created by {{city.user.name}}</sup>
+        {% else %}
+            <sup>The city-entry of {{city.name}} is part of the originally database.</sup>
+        {% endif %}
+    {% endif %}
+</div>
+{% endblock %}

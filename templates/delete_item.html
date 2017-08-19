@@ -1,0 +1,15 @@
+{% include "header.html" %}
+<h3>{{item.name}}</h3>
+<p>You are sure, you want to delete {{item.name}}? Than press "Delete". Else go back to attraction or main-page.</p>
+<hr>
+<br>
+<!-- confirm delete or go back to attraction / main-page -->
+<form action="#" method="POST">
+    <button type="submit" id="submit">Delete</button>
+    <button><a href="{{url_for('show_item', cityname = item.categories.name, item=item.name)}}">Go back to attraction</a></button>
+    <button type="button" onclick="window.location.href='/'">Back to main page</button>
+</form>
+<!-- closing open tags from header.html -->
+</div>
+</body>
+</html>

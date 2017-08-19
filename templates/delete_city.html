@@ -1,0 +1,15 @@
+{% include "header.html" %}
+<h3>{{city}}</h3>
+    <p>You are sure to delete the city of {{city}} and all its attractions?</p>
+    <p>Than press "Submit", else go back to the city-page or the main-page</p>
+<hr>
+<br>
+<form action="#" method="POST">
+    <button type="submit" id="submit">Delete</button>
+    <button><a href="{{url_for('show_city', cityname = city)}}">Go back</a></button>
+    <button type="button" onclick="window.location.href='/'">Back to main page</button>
+</form>
+<!-- closing open tags from header.html -->
+</div>
+</body>
+</html>

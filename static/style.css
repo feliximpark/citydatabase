@@ -1,0 +1,25 @@
+.headline {
+    background-color: #2c4f87;
+    margin-top: 10px;
+}
+
+.header {
+    color: white;
+}
+
+.buttonbox{
+    padding-top: 20px
+}
+
+.button_right{
+    border-radius: 5px;
+    float: right;
+    position: absolute;
+    right: 20px;
+    top: 20px;
+}
+
+.greybox{
+    background-color: lightgrey;
+    border: 1px solid black;
+}

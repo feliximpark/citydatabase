@@ -1,0 +1,25 @@
+{% include "header.html" %}
+<div class="row">
+    <div class="col-md-6">
+        <h2>{{item.name}}</h2><br>
+    </div>
+</div>
+<div class="row">
+    <div class="col-md-6 greybox">
+        <h4>{{item.description}}</h4>
+        <br>
+    </div>
+</div>
+<!-- showing edit- and delete-functions only to logged in users -->
+{% if login_session["username"] %}
+    <br>
+    <a href="{{url_for('edit_item', item=item.name)}}">Edit</a><span> | </span>
+    <a href="{{url_for('delete_item', item=item.name)}}">Delete</a><span> | </span>
+{% endif %}
+<!-- Redirecting the user to the city- or the main-page -->
+<a href="{{url_for('show_city', cityname=item.categories.name)}}">Back to {{item.categories.name}}</a><span> | </span>
+<a href="{{url_for('landing_page')}}">Back to Main page</a>
+<!-- closing open tags from header.html -->
+</div>
+</body>
+</html>

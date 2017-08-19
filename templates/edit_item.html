@@ -1,0 +1,47 @@
+{% include "header.html" %}
+<h3>Edit {{item.name}}</h3>
+<h4>{{item.categories.name}}</h4>
+<br>
+<!-- showing the form only to logged in users, else show "Please log in!" -->
+{% if login_session["username"] %}
+<div class="row">
+    <div class="col-md-6">
+        <form action="#" method="POST" id="item">
+            <label for="title">Title</label><br>
+            <input type ="text" maxlength="100" class="form-control" name="attraction" value="{{item.name}}"><br><br>
+    </div>
+</div>
+<div class="row">
+    <div class="col-md-6">
+        <label for="description">Description</label><br>
+        <textarea maxlenght="400" rows="3" name="description">{{item.description}}</textarea>
+        <br><br>
+    </div>
+</div>
+<div class="row">
+    <div class="col-md-6"><label for="category">City</label><br>
+        <select name="category">
+            <option value="{{item.category_id}}">{{item.categories.name}}</option>
+            {%for elem in cities%}
+            <option value="{{elem.id}}">{{elem.name}}</option>
+            {%endfor%}
+        </select>
+    </div>
+</div>
+<br>
+<br>
+<br>
+<button type="submit" id="submit" type="submit">Submit</button>
+<button type="button" onclick="window.location.href='/'">Back to main page</button>
+</form>
+{% else %}
+<div class="row">
+    <div class="col-md-6">
+        <h1>Please log in, before you can edit an item! </h1>
+    </div>
+</div>
+{% endif %}
+<!-- ending open tags from headers.html -->
+</div>
+</body>
+</html>

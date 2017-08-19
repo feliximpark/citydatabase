@@ -1,0 +1,37 @@
+{% include "header.html" %}
+<div class="row">
+    <div class="col-md-12">
+        <h2>Creating new attraction in {{city.name}}</h2>
+        <br>
+    </div>
+</div>
+<!-- showing form only to logged-in users, else show "Please log in!" -->
+{% if login_session["username"] %}
+<form action="#" method="POST">
+    <div class="row">
+        <div class="col-md-6">
+            <label for="newitem">Name of new attraction in {{city.name}}</label><br>
+        <input type ="text" maxlength="80" class="form-control" name="newitem"><br><br>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-6">
+            <label for="description">Description of Attraction</label><br>
+            <textarea maxlenght="400" rows="3" name="description"></textarea>
+            <br>
+            <br>
+            <br>
+            <br>
+            <br>
+            <button type="submit" id="submit" type="submit">Submit</button>
+            <button type="button" onclick="window.location.href='/'">Back to main page</button>
+        </div>
+    </div>
+</form>
+{% else %}
+<h1>To save a new Attraction, please log in first!</h1>
+{% endif %}
+<!-- closing open tags from header.html -->
+</div>
+</body>
+</html>
