@@ -12,7 +12,9 @@ import json
 import requests
 from oauth2client.client import flow_from_clientsecrets
 from oauth2client.client import FlowExchangeError
+from functools import wraps
 import httplib2
+
 # importing the google client_secret
 CLIENT_ID = json.loads(
   open('client_secrets.json', 'r').read())['web']['client_id']
@@ -24,6 +26,16 @@ engine = create_engine('sqlite:///citiesfinal.db')
 Base.metadata.bind = engine
 DBSession = sessionmaker(bind=engine)
 session = DBSession()
+
+
+# creating login decorator used by all CRUD-functions
+def login_required(f):
+    @wraps(f)
+    def decorated_function(*args, **kwargs):
+        if 'username' not in login_session:
+            return redirect('/login')
+        return f(*args, **kwargs)
+    return decorated_function
 
 
 # STARTING THE ROUTES
@@ -114,7 +126,7 @@ def gconnect():
     user_id = getUserID(login_session['username'])
     if not user_id:
         user_id = createUser(login_session)
-        print ("New user set")
+        print ("  user set")
     login_session['user_id'] = user_id
     output = ''
     output += '<h1>Welcome, '
@@ -187,7 +199,7 @@ def gdisconnect():
 
 # ROUTES FOR WORKING WITH CITITES
 # showing the choosen city and its attractions
-@app.route("/catalog/<cityname>/item")
+@app.route("/catalog/<path:cityname>/item")
 def show_city(cityname):
     cities = session.query(Cities).all()
     city = session.query(Cities).filter_by(name=cityname).first()
@@ -199,6 +211,7 @@ def show_city(cityname):
 # WORKING WITH CITIES
 # creating new city
 @app.route("/newcity", methods=["GET", "POST"])
+@login_required
 def new_city():
     if request.method == "POST":
         # checking if the form is filled out
@@ -235,7 +248,8 @@ def new_city():
 
 
 # Deleting a city and all attractions
-@app.route("/catalog/<city>/delete", methods=["GET", "POST"])
+@app.route("/catalog/<path:city>/delete", methods=["GET", "POST"])
+@login_required
 def delete_city(city):
     # before checking the request method, first check if the user is creator
     # of the city and is authorized to delete ist
@@ -244,7 +258,7 @@ def delete_city(city):
         return """<body><script>
                   alert('You are not authorized to delete this city.');
                   function reloc(){window.location=
-                                'http://localhost:8080/catalog/%s/item'};
+                                'http://localhost:8000/catalog/%s/item'};
                   reloc();</script></body>""" % city
 
     if request.method == "POST":
@@ -263,7 +277,8 @@ def delete_city(city):
 
 # WORKING WITH ITEMS
 # create an new item
-@app.route("/catalog/<city>/newitem", methods=["GET", "POST"])
+@app.route("/catalog/<path:city>/newitem", methods=["GET", "POST"])
+@login_required
 def new_item(city):
     choosen_city = session.query(Cities).filter_by(name=city).first()
     choosen_city_id = choosen_city.id
@@ -290,7 +305,7 @@ def new_item(city):
 
 
 # Show description of a single item
-@app.route("/catalog/<cityname>/<item>")
+@app.route("/catalog/<path:cityname>/<item>")
 def show_item(cityname, item):
     description = session.query(Items).filter_by(name=item).one()
     return render_template("show_item.html", item=description,
@@ -298,7 +313,8 @@ def show_item(cityname, item):
 
 
 # editing an choosen item
-@app.route("/catalog/<item>/edit", methods=["GET", "POST"])
+@app.route("/catalog/<path:item>/edit", methods=["GET", "POST"])
+@login_required
 def edit_item(item):
     itemToEdit = session.query(Items).filter_by(name=item).one()
     cities = session.query(Cities).all()
@@ -307,7 +323,7 @@ def edit_item(item):
     if itemToEdit.user_id != login_session['user_id']:
         return """<script>alert('You are not authorized to edit this item');
         function reloc()
-        {window.location='http://localhost:8080/catalog/%s/%s'};
+        {window.location='http://localhost:8000/catalog/%s/%s'};
         reloc()</script>""" % (itemToEdit.categories.name, itemToEdit.name)
     if request.method == "POST":
         if request.form["attraction"]:
@@ -325,7 +341,8 @@ def edit_item(item):
 
 
 # delete an attraction
-@app.route("/catalog/<item>/delete)", methods=["GET", "POST"])
+@app.route("/catalog/<path:item>/delete)", methods=["GET", "POST"])
+@login_required
 def delete_item(item):
     itemToDelete = session.query(Items).filter_by(name=item).one()
     # checking if user is the creator of the attraction to delete
@@ -334,7 +351,7 @@ def delete_item(item):
         print (login_session['user_id'])
         return """<script>alert('You are not authorized to delete this item');
         function reloc()
-        {window.location='http://localhost:8080/catalog/%s/%s'};
+        {window.location='http://localhost:8000/catalog/%s/%s'};
         reloc()</script>""" % (itemToDelete.categories.name, itemToDelete.name)
     if request.method == "POST":
         session.delete(itemToDelete)
